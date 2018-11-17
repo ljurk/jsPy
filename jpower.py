@@ -5,10 +5,9 @@ import os
 sourceFilePath ='/home/ljurk/.config/powerline/config.json'
 setTo =''
 data = {}
-jsonPath = []
 args = sys.argv
 args.pop(0)
-argCount = len(args)
+foundString=''
 
 #open file
 with open(sourceFilePath, 'r') as read_file:
@@ -17,10 +16,11 @@ with open(sourceFilePath, 'r') as read_file:
 for i in range(len(args)):
     if args[i].startswith('-'):
         args[i] = args[i].replace('-','',1)
-        jsonPath.insert(i,args[i])
     else:
-        setTo = args[i] 
+        setTo = args[i]
+        args.pop(i)
 
+argCount = len(args)
 print(sourceFilePath)
 print(args)
 print('depth: ' + str(argCount))
@@ -29,22 +29,28 @@ print()
 #show objects under given path
 elem=data
 for i in range(argCount):
-    elem=elem[jsonPath[i]]
-for e in elem:
-    print(e)
+    elem=elem[args[i]]
 
-#show all
-#elem=data
-#for i in range(len
-    #backup actual config
-    #os.system('cp ' + sourceFilePath + ' ' + sourceFilePath + '.old')
-    #change data to input
-    #data['ext']['shell']['colorscheme'] = setTo
-#    #write to file
-#    with open(sourceFilePath, 'w') as write_file:
-#        json.dump(data, 
-#                write_file,
-#                ensure_ascii = False,
-#                sort_keys = True,
-#                indent = 4 )
-#    os.system('powerline-daemon --replace')
+for e in elem:
+    if len(e) == 1:
+        foundString = True
+    else:
+        print(e)
+
+if foundString:
+    print(elem)
+    if setTo != '':
+        #change data to input
+        if argCount == 3:
+            print('change ' + data[args[0]][args[1]][args[2]] + ' to ' + setTo)
+            #backup actual config
+            os.system('cp ' + sourceFilePath + ' ' + sourceFilePath + '.old')
+            data[args[0]][args[1]][args[2]] = setTo
+            #write to file
+            with open(sourceFilePath, 'w') as write_file:
+                json.dump(data, 
+                        write_file,
+                        ensure_ascii = False,
+                        sort_keys = True,
+                        indent = 4 )
+            os.system('powerline-daemon --replace')
