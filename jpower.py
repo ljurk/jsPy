@@ -17,6 +17,7 @@ args.pop(0)
 foundString=''
 recursive =0
 toPop =[]
+postHook='powerline-daemon --replace'
 
 #show recursive
 def formatData(t,s):
@@ -96,4 +97,4 @@ else:
                             ensure_ascii = False,
                             sort_keys = True,
                             indent = 4 )
-                os.system('powerline-daemon --replace')
+                os.system(postHook)
